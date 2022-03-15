@@ -1,0 +1,25 @@
+alias: Adaptive Lighting - General Switch
+sequence:
+  - service: media_player.turn_on
+    data: {}
+    target:
+      entity_id: '{{ entity_id }}'
+  - service: switch.toggle
+    data: {}
+    target:
+      entity_id: '{{ switch }}'
+  - service: tts.cloud_say
+    data:
+      entity_id: '{{ entity_id }}'
+      message: Adaptive lighting is turned {{ states.('{{ switch }}') }}
+description: A script to set the adaptive lighting switch to on/of and TTS to a speaker.
+fields:
+  entity_id:
+    description: Speaker
+    example: media_player.office_1_speaker
+    required: true
+  switch:
+    description: Adaptive lighting switch
+    example: switch.adaptive_lighting_living_room
+    required: true
+mode: restart
