@@ -1,0 +1,24 @@
+alias: Adaptive Lighting - Sleep Mode Switch
+description: A script to toggle adaptive lighting - sleep mode and tts to a given speaker
+sequence:
+  - service: media_player.turn_on
+    data: {}
+    target:
+      entity_id: '{{ entity_id }}'
+  - service: switch.toggle
+    data: {}
+    target:
+      entity_id: '{{ switch }}'
+  - service: tts.cloud_say
+    data:
+      entity_id: '{{ entity_id }}'
+      message: Adaptive lighting - Sleep Mode is turned {{ states.('{{ switch }}') }}
+description: A script to set the adaptive lighting switch to on/of and TTS to a speaker.
+fields:
+  entity_id:
+    description: Speaker
+    example: media_player.office_1_speaker
+  switch:
+    description: Adaptive lighting switch
+    example: switch.adaptive_lighting_sleep_mode_living_room
+mode: restart
