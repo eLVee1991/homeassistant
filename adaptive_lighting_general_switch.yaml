@@ -1,4 +1,5 @@
 alias: Adaptive Lighting - General Switch
+description: A script to toggle adaptive lighting and tts to a given speaker
 sequence:
   - service: media_player.turn_on
     data: {}
