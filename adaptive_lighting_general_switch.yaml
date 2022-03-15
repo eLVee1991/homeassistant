@@ -1,3 +1,11 @@
+# make sure you have adaptive lighting integration installed. https://github.com/basnijholt/adaptive-lighting
+# you can call this script in an automation or as a service call.
+#
+# service: script.adaptive_lighting_switch
+# data: 
+#   entity_id: media_player.office_1_speaker
+#   switch: switch.adaptive_lighting_living_room
+
 alias: Adaptive Lighting - General Switch
 description: A script to toggle adaptive lighting and tts to a given speaker
 sequence:
