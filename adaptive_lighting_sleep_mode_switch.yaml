@@ -29,7 +29,7 @@ fields:
     example: media_player.office_1_speaker
     required: true
   switch:
-    description: Adaptive lighting switch
+    description: Switch
     example: switch.adaptive_lighting_sleep_mode_living_room
     required: true
 mode: restart
