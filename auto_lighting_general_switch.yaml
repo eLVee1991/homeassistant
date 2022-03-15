@@ -1,4 +1,11 @@
 # make sure you have created an entity called input_boolean.living_room_auto_lighting (or other name) as a helper.
+# you can call this script in an automation or as a service call.
+# pass the given variables as data so that the script knows what speaker and switchs to use 
+#
+# service: script.auto_lighting_switch (or other name)
+# data: 
+#   entity_id: media_player.living_room_speaker
+#   switch: input_boolean.living_room_auto_lighting
 
 alias: Auto Lighting - General Switch
 sequence:
@@ -13,15 +20,15 @@ sequence:
   - service: tts.cloud_say
     data:
       entity_id: '{{ entity_id }}'
-      message: Auto lighting is turned {{ states('{{ switch }}') }}
+      message: Auto lighting is turned {{ states.('{{ switch }}') }}
 description: A script to set the auto lighting switch to on/of and TTS to a speaker.
 fields:
   entity_id:
     description: Speaker
-    example: media_player.office_1_speaker
+    example: media_player.living_room_speaker
     required: true
   switch:
-    description: Auto lighting switch
-    example: input_boolean.office_1_auto_lighting
+    description: Switch
+    example: input_boolean.living_room_auto_lighting
     required: true
 mode: restart
