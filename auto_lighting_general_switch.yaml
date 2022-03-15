@@ -1,0 +1,27 @@
+# make sure you have created an entity called input_boolean.living_room_auto_lighting (or other name) as a helper.
+
+alias: Auto Lighting - General Switch
+sequence:
+  - service: media_player.turn_on
+    data: {}
+    target:
+      entity_id: '{{ entity_id }}'
+  - service: input_boolean.toggle
+    data: {}
+    target:
+      entity_id: '{{ switch }}'
+  - service: tts.cloud_say
+    data:
+      entity_id: '{{ entity_id }}'
+      message: Auto lighting is turned {{ states('{{ switch }}') }}
+description: A script to set the auto lighting switch to on/of and TTS to a speaker.
+fields:
+  entity_id:
+    description: Speaker
+    example: media_player.office_1_speaker
+    required: true
+  switch:
+    description: Auto lighting switch
+    example: input_boolean.office_1_auto_lighting
+    required: true
+mode: restart
