@@ -1,4 +1,4 @@
-# homeassistant
+# Home Assistant
 A collection of scripts, automations and yaml or json files
 
 ## Automations:
