@@ -1,0 +1,51 @@
+blueprint: 
+
+  name: Auto Lighting - General Switch
+  description: A script to set the auto lighting switch to on/of and TTS to a speaker.
+  domain: script
+  source_url: 
+  input:
+    notify_device:
+      name: Device to notify
+      description: Device needs to run the official Home Assistant app to receive notifications.
+      selector:
+        device:
+          integration: mobile_app
+    title:
+      name: "Title"
+      description: "The title of the button shown in the notification."
+      default: ""
+      selector:
+        text:
+    message:
+      name: "Message"
+      description: "The message body"
+      selector:
+        text:
+
+
+alias: Auto Lighting - General Switch
+sequence:
+  - service: media_player.turn_on
+    data: {}
+    target:
+      entity_id: '{{ entity_id }}'
+  - service: input_boolean.toggle
+    data: {}
+    target:
+      entity_id: '{{ switch }}'
+  - service: tts.cloud_say
+    data:
+      entity_id: '{{ entity_id }}'
+      message: Auto lighting is turned '{{ states(switch) }}'
+description: A script to set the auto lighting switch to on/of and TTS to a speaker.
+fields:
+  entity_id:
+    description: Speaker
+    example: media_player.living_room_speaker
+    required: true
+  switch:
+    description: Switch
+    example: input_boolean.living_room_auto_lighting
+    required: true
+mode: single
