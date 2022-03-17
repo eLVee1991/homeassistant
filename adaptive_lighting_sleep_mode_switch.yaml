@@ -32,4 +32,4 @@ fields:
     description: Switch
     example: switch.adaptive_lighting_sleep_mode_living_room
     required: true
-mode: restart
+mode: single
