@@ -21,7 +21,7 @@ sequence:
   - service: tts.cloud_say
     data:
       entity_id: '{{ entity_id }}'
-      message: Adaptive lighting - Sleep Mode is turned {{ states.('{{ switch }}') }}
+      message: Adaptive lighting - Sleep Mode is turned '{{ states(switch) }}'
 description: A script to set the adaptive lighting switch to on/of and TTS to a speaker.
 fields:
   entity_id:
