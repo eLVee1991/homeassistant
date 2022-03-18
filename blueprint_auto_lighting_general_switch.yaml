@@ -1,6 +1,6 @@
 blueprint: 
   name: Auto Lighting - General Switch
-  description: A script to set the auto lighting switch to on/of and TTS to a speaker.
+  description: A script to toggle a input boolean switch and TTS to a speaker.
   domain: script
   source_url: https://github.com/eLVee1991/homeassistant/blob/main/blueprint_auto_lighting_general_switch.yaml
   input:
@@ -13,7 +13,7 @@ blueprint:
           domain: media_player
     switch:
       name: Input Boolean
-      description: "Input boolean to toggle the auto lighting switch. You should create a toggle switch as a helper. For example: input_boolean.living_room_auto_lighting"
+      description: "Input boolean to toggle the auto lighting switch. You can create a toggle switch as a helper. For example: input_boolean.living_room_auto_lighting"
       default: ''
       selector:
         entity:
@@ -21,7 +21,7 @@ blueprint:
 variables:
   entity_id: !input 'entity_id'
   switch: !input 'switch'
-alias: Auto Lighting - General Switch
+alias: Toggle - Input Boolean to TTS
 sequence:
   - service: media_player.turn_on
     data: {}
@@ -34,7 +34,9 @@ sequence:
   - service: tts.cloud_say
     data:
       entity_id: '{{ entity_id }}'
-      message: Auto lighting is turned '{{ states(switch) }}'
+      message: |
+        "{{ state_attr(switch, 'friendly_name') }}" is turned "{{ states(switch)
+        }}"
 description: A script to set the auto lighting switch to on/of and TTS to a speaker.
 fields:
   entity_id:
