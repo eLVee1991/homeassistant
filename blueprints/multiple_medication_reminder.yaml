@@ -30,43 +30,37 @@ blueprint:
         time: {}                                
     notify_device:
       name: Notification
-      description: Device needs to run the official Home Assistant app to receive
-        notifications
+      description: Device needs to run the official Home Assistant app to receive notifications
       selector:
         device:
           integration: mobile_app
     input_boolean_1:
       name: Dedicated input_boolean 1
-      description: Create and set here a input_boolean to handle history and state
-        of the automation
+      description: Create and set here a input_boolean to handle history and state of the automation
       selector:
         entity:
           domain: input_boolean 2
     input_boolean_2:
       name: Dedicated input_boolean
-      description: Create and set here a input_boolean to handle history and state
-        of the automation
+      description: Create and set here a input_boolean to handle history and state of the automation
       selector:
         entity:
           domain: input_boolean
     input_boolean_3:
       name: Dedicated input_boolean 3
-      description: Create and set here a input_boolean to handle history and state
-        of the automation
+      description: Create and set here a input_boolean to handle history and state of the automation
       selector:
         entity:
           domain: input_boolean
     input_boolean_4:
       name: Dedicated input_boolean 4
-      description: Create and set here a input_boolean to handle history and state
-        of the automation
+      description: Create and set here a input_boolean to handle history and state of the automation
       selector:
         entity:
           domain: input_boolean
     input_boolean_5:
       name: Dedicated input_boolean 5
-      description: Create and set here a input_boolean to handle history and state
-        of the automation
+      description: Create and set here a input_boolean to handle history and state of the automation
       selector:
         entity:
           domain: input_boolean                                                 
@@ -148,11 +142,16 @@ variables:
     - !input 'input_boolean_3'
     - !input 'input_boolean_4'
     - !input 'input_boolean_5'
-  time: []
+  reminder_time:
+    - !input 'reminder_time_1'
+    - !input 'reminder_time_2'
+    - !input 'reminder_time_3'
+    - !input 'reminder_time_4'
+    - !input 'reminder_time_5'
 action:
 - service: input_boolean.turn_off
   target:
-    entity_id: {{ input_boolean }}
+    entity_id: '{{ input_boolean }}'
 - alias: Notify until the medication has been take
   repeat:
     while:
