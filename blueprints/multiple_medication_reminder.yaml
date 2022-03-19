@@ -6,99 +6,88 @@ blueprint:
     reminder_time_1:
       name: Reminder time 1
       description: At what time do you want to be reminded
-      default: None 
       selector:
         time: {}
     reminder_time_2:
       name: Reminder time 2
       description: At what time do you want to be reminded
-      default: None
       selector:
         time: {}
     reminder_time_3:
       name: Reminder time 3
       description: At what time do you want to be reminded
-      default: None
       selector:
         time: {}
     reminder_time_4:
       name: Reminder time 4
       description: At what time do you want to be reminded
-      default: None      
       selector:
         time: {}
     reminder_time_5:
       name: Reminder time 5
       description: At what time do you want to be reminded
-      default: None      
       selector:
         time: {}                                
     notify_device:
       name: Notification
       description: Device needs to run the official Home Assistant app to receive notifications
-      default: None
       selector:
         device:
           integration: mobile_app
     input_boolean_1:
       name: Dedicated input_boolean 1
       description: Create and set here a input_boolean to handle history and state of the automation
-      default: None      
       selector:
         entity:
-          domain: input_boolean
+          domain: input_boolean 2
     input_boolean_2:
       name: Dedicated input_boolean
       description: Create and set here a input_boolean to handle history and state of the automation
-      default: None      
       selector:
         entity:
           domain: input_boolean
     input_boolean_3:
       name: Dedicated input_boolean 3
       description: Create and set here a input_boolean to handle history and state of the automation
-      default: None      
       selector:
         entity:
           domain: input_boolean
     input_boolean_4:
       name: Dedicated input_boolean 4
       description: Create and set here a input_boolean to handle history and state of the automation
-      default: None      
       selector:
         entity:
           domain: input_boolean
     input_boolean_5:
       name: Dedicated input_boolean 5
       description: Create and set here a input_boolean to handle history and state of the automation
-      default: None      
       selector:
         entity:
           domain: input_boolean                                                 
     notification_title:
       name: Notification title (Optional)
-      description: 'default: None Medication reminder'
-      default: None Medication reminder!
+      description: 'Default: Medication reminder'
+      default: Medication reminder!
     notification_message:
       name: Notification message (Optional)
-      description: 'default: None It''s time to take your medication'
-      default: None It's time to take your medication
+      description: 'Default: It''s time to take your medication'
+      default: It's time to take your medication
     notification_action_taken:
       name: 'Notification action: Taken (Optional)'
-      description: 'default: None Taken'
-      default: None Taken
+      description: 'Default: Taken'
+      default: Taken
     notification_action_later:
       name: 'Notification action: Ask later (Optional)'
-      description: 'default: None Ask later'
-      default: None Ask later
+      description: 'Default: Ask later'
+      default: Ask later
     notification_action_skip:
       name: 'Notification action: Skip (Optional)'
-      description: 'default: None Skip'
-      default: None Skip
+      description: 'Default: Skip'
+      default: Skip
     ask_later_wait_time:
       name: Wait time before next reminder
       description: Minutes before notify again after a Ask later action.
-      default: None 30
+      default: 30
       selector:
         number:
           min: 5.0
@@ -108,31 +97,31 @@ blueprint:
           step: 1.0
     logbook_message_remind:
       name: Logbook message for remind (Optional)
-      description: 'default: None Reminder sent'
-      default: None Reminder sent
+      description: 'Default: Reminder sent'
+      default: Reminder sent
     logbook_message_taken:
       name: Logbook message for action Taken (Optional)
-      description: 'default: None Medication taken'
-      default: None Medication taken
+      description: 'Default: Medication taken'
+      default: Medication taken
     logbook_message_later:
       name: Logbook message for action Ask later (Optional)
-      description: 'default: None Postpone reminder'
-      default: None Postpone reminder
+      description: 'Default: Postpone reminder'
+      default: Postpone reminder
     logbook_message_skip:
       name: Logbook message for action Skip (Optional)
-      description: 'default: None Reminder skipped'
-      default: None Reminder skipped
+      description: 'Default: Reminder skipped'
+      default: Reminder skipped
     logbook_message_no_answer:
       name: Logbook message for no action after timeout (Optional)
-      description: 'default: None No answer time out'
-      default: None No answer time out
+      description: 'Default: No answer time out'
+      default: No answer time out
     optional_action:
       name: Optional action
       description: Run an action like notify a speaker at the same time that the mobile
         notification
       selector:
         action: {}
-      default: None []
+      default: []
   source_url: https://raw.githubusercontent.com/eLVee1991/homeassistant/main/blueprints/multiple_medication_reminder.yaml
 trigger:
 - platform: time
@@ -226,7 +215,7 @@ action:
             name: !input 'notification_title'
             message: !input 'logbook_message_skip'
             entity_id: !input 'input_boolean_1'
-      default: None
+      default:
       - device_id: !input 'notify_device'
         domain: mobile_app
         type: notify
@@ -299,7 +288,7 @@ action:
             name: !input 'notification_title'
             message: !input 'logbook_message_skip'
             entity_id: !input 'input_boolean_2'
-      default: None
+      default:
       - device_id: !input 'notify_device'
         domain: mobile_app
         type: notify
@@ -372,7 +361,7 @@ action:
             name: !input 'notification_title'
             message: !input 'logbook_message_skip'
             entity_id: !input 'input_boolean_3'
-      default: None
+      default:
       - device_id: !input 'notify_device'
         domain: mobile_app
         type: notify
@@ -445,7 +434,7 @@ action:
             name: !input 'notification_title'
             message: !input 'logbook_message_skip'
             entity_id: !input 'input_boolean_4'
-      default: None
+      default:
       - device_id: !input 'notify_device'
         domain: mobile_app
         type: notify
@@ -518,7 +507,7 @@ action:
             name: !input 'notification_title'
             message: !input 'logbook_message_skip'
             entity_id: !input 'input_boolean_5'
-      default: None
+      default:
       - device_id: !input 'notify_device'
         domain: mobile_app
         type: notify
