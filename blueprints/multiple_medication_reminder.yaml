@@ -6,14 +6,14 @@ blueprint:
     reminder_time_1:
       name: Reminder time 1
       description: At what time do you want to be reminded
-      required: true
       selector:
+        required: true
         time: {}
     reminder_time_2:
       name: Reminder time 2
       description: At what time do you want to be reminded
-      required: false
       selector:
+        required: false
         time: {}
     reminder_time_3:
       name: Reminder time 3
