@@ -135,40 +135,34 @@ trigger:
 - platform: time
   at: !input 'reminder_time_5'
 mode: restart
-variables:
-  input_boolean:
-    - !input 'input_boolean_1'
-    - !input 'input_boolean_2'
-    - !input 'input_boolean_3'
-    - !input 'input_boolean_4'
-    - !input 'input_boolean_5'
-  reminder_time:
-    - !input 'reminder_time_1'
-    - !input 'reminder_time_2'
-    - !input 'reminder_time_3'
-    - !input 'reminder_time_4'
-    - !input 'reminder_time_5'
 action:
 - service: input_boolean.turn_off
   target:
-    entity_id: '{{ input_boolean }}'
-- alias: Notify until the medication has been take
+    entity_id: !input 'input_boolean_1'
+- service: input_boolean.turn_off
+  target:
+    entity_id: !input 'input_boolean_2'
+- service: input_boolean.turn_off
+  target:
+    entity_id: !input 'input_boolean_3'
+- service: input_boolean.turn_off
+  target:
+    entity_id: !input 'input_boolean_4'
+- service: input_boolean.turn_off
+  target:
+    entity_id: !input 'input_boolean_5'                
+- alias: Notify until the medication has been taken
   repeat:
     while:
-      - condition: or
-        conditions:
-          - condition: state
-            entity_id: '{{ input_boolean }}'
-            state: 'off'
-
-# finished here. maybe set a variable to track time and input boolians to make script easier
-
+    - condition: state
+      entity_id: !input 'input_boolean_1'
+      state: 'off'
     sequence:
     - service: logbook.log
       data:
         name: !input 'notification_title'
         message: !input 'logbook_message_remind'
-        entity_id: '{{ input_boolean }}'
+        entity_id: !input 'input_boolean_1'
     - choose:
       - conditions: '{{ true }}'
         sequence: !input 'optional_action'
@@ -196,31 +190,31 @@ action:
         sequence:
         - service: input_boolean.turn_on
           target:
-            entity_id: '{{ input_boolean }}'
+            entity_id: !input 'input_boolean_1'
         - service: logbook.log
           data:
             name: !input 'notification_title'
             message: !input 'logbook_message_taken'
-            entity_id: '{{ input_boolean }}'
+            entity_id: !input 'input_boolean_1'
       - conditions: '{{ wait.trigger.event.data.action == ''later'' }}'
         sequence:
         - service: logbook.log
           data:
             name: !input 'notification_title'
             message: !input 'logbook_message_later'
-            entity_id: '{{ input_boolean }}'
+            entity_id: !input 'input_boolean_1'
         - delay:
             minutes: !input 'ask_later_wait_time'
       - conditions: '{{ wait.trigger.event.data.action == ''skip'' }}'
         sequence:
         - service: input_boolean.turn_on
           target:
-            entity_id: '{{ input_boolean }}'
+            entity_id: !input 'input_boolean_1'
         - service: logbook.log
           data:
             name: !input 'notification_title'
             message: !input 'logbook_message_skip'
-            entity_id: '{{ input_boolean }}'
+            entity_id: !input 'input_boolean_1'
       default:
       - device_id: !input 'notify_device'
         domain: mobile_app
@@ -232,4 +226,296 @@ action:
         data:
           name: !input 'notification_title'
           message: !input 'logbook_message_no_answer'
-          entity_id: '{{ input_boolean }}'
+          entity_id: !input 'input_boolean_1'
+    - condition: state
+      entity_id: !input 'input_boolean_2'
+      state: 'off'
+    sequence:
+    - service: logbook.log
+      data:
+        name: !input 'notification_title'
+        message: !input 'logbook_message_remind'
+        entity_id: !input 'input_boolean_2'
+    - choose:
+      - conditions: '{{ true }}'
+        sequence: !input 'optional_action'
+    - device_id: !input 'notify_device'
+      domain: mobile_app
+      type: notify
+      title: !input 'notification_title'
+      message: !input 'notification_message'
+      data:
+        actions:
+        - title: !input 'notification_action_taken'
+          action: taken
+        - title: !input 'notification_action_later'
+          action: later
+        - title: !input 'notification_action_skip'
+          action: skip
+        tag: medication-reminder
+    - wait_for_trigger:
+        platform: event
+        event_type: mobile_app_notification_action
+      timeout:
+        minutes: !input 'ask_later_wait_time'
+    - choose:
+      - conditions: '{{ wait.trigger.event.data.action == ''taken'' }}'
+        sequence:
+        - service: input_boolean.turn_on
+          target:
+            entity_id: !input 'input_boolean_2'
+        - service: logbook.log
+          data:
+            name: !input 'notification_title'
+            message: !input 'logbook_message_taken'
+            entity_id: !input 'input_boolean_2'
+      - conditions: '{{ wait.trigger.event.data.action == ''later'' }}'
+        sequence:
+        - service: logbook.log
+          data:
+            name: !input 'notification_title'
+            message: !input 'logbook_message_later'
+            entity_id: !input 'input_boolean_2'
+        - delay:
+            minutes: !input 'ask_later_wait_time'
+      - conditions: '{{ wait.trigger.event.data.action == ''skip'' }}'
+        sequence:
+        - service: input_boolean.turn_on
+          target:
+            entity_id: !input 'input_boolean_2'
+        - service: logbook.log
+          data:
+            name: !input 'notification_title'
+            message: !input 'logbook_message_skip'
+            entity_id: !input 'input_boolean_2'
+      default:
+      - device_id: !input 'notify_device'
+        domain: mobile_app
+        type: notify
+        message: clear_notification
+        data:
+          tag: medication-reminder
+      - service: logbook.log
+        data:
+          name: !input 'notification_title'
+          message: !input 'logbook_message_no_answer'
+          entity_id: !input 'input_boolean_2'
+    - condition: state
+      entity_id: !input 'input_boolean_3'
+      state: 'off'
+    sequence:
+    - service: logbook.log
+      data:
+        name: !input 'notification_title'
+        message: !input 'logbook_message_remind'
+        entity_id: !input 'input_boolean_3'
+    - choose:
+      - conditions: '{{ true }}'
+        sequence: !input 'optional_action'
+    - device_id: !input 'notify_device'
+      domain: mobile_app
+      type: notify
+      title: !input 'notification_title'
+      message: !input 'notification_message'
+      data:
+        actions:
+        - title: !input 'notification_action_taken'
+          action: taken
+        - title: !input 'notification_action_later'
+          action: later
+        - title: !input 'notification_action_skip'
+          action: skip
+        tag: medication-reminder
+    - wait_for_trigger:
+        platform: event
+        event_type: mobile_app_notification_action
+      timeout:
+        minutes: !input 'ask_later_wait_time'
+    - choose:
+      - conditions: '{{ wait.trigger.event.data.action == ''taken'' }}'
+        sequence:
+        - service: input_boolean.turn_on
+          target:
+            entity_id: !input 'input_boolean_3'
+        - service: logbook.log
+          data:
+            name: !input 'notification_title'
+            message: !input 'logbook_message_taken'
+            entity_id: !input 'input_boolean_3'
+      - conditions: '{{ wait.trigger.event.data.action == ''later'' }}'
+        sequence:
+        - service: logbook.log
+          data:
+            name: !input 'notification_title'
+            message: !input 'logbook_message_later'
+            entity_id: !input 'input_boolean_3'
+        - delay:
+            minutes: !input 'ask_later_wait_time'
+      - conditions: '{{ wait.trigger.event.data.action == ''skip'' }}'
+        sequence:
+        - service: input_boolean.turn_on
+          target:
+            entity_id: !input 'input_boolean_3'
+        - service: logbook.log
+          data:
+            name: !input 'notification_title'
+            message: !input 'logbook_message_skip'
+            entity_id: !input 'input_boolean_3'
+      default:
+      - device_id: !input 'notify_device'
+        domain: mobile_app
+        type: notify
+        message: clear_notification
+        data:
+          tag: medication-reminder
+      - service: logbook.log
+        data:
+          name: !input 'notification_title'
+          message: !input 'logbook_message_no_answer'
+          entity_id: !input 'input_boolean_3'
+    - condition: state
+      entity_id: !input 'input_boolean_4'
+      state: 'off'
+    sequence:
+    - service: logbook.log
+      data:
+        name: !input 'notification_title'
+        message: !input 'logbook_message_remind'
+        entity_id: !input 'input_boolean_4'
+    - choose:
+      - conditions: '{{ true }}'
+        sequence: !input 'optional_action'
+    - device_id: !input 'notify_device'
+      domain: mobile_app
+      type: notify
+      title: !input 'notification_title'
+      message: !input 'notification_message'
+      data:
+        actions:
+        - title: !input 'notification_action_taken'
+          action: taken
+        - title: !input 'notification_action_later'
+          action: later
+        - title: !input 'notification_action_skip'
+          action: skip
+        tag: medication-reminder
+    - wait_for_trigger:
+        platform: event
+        event_type: mobile_app_notification_action
+      timeout:
+        minutes: !input 'ask_later_wait_time'
+    - choose:
+      - conditions: '{{ wait.trigger.event.data.action == ''taken'' }}'
+        sequence:
+        - service: input_boolean.turn_on
+          target:
+            entity_id: !input 'input_boolean_4'
+        - service: logbook.log
+          data:
+            name: !input 'notification_title'
+            message: !input 'logbook_message_taken'
+            entity_id: !input 'input_boolean_4'
+      - conditions: '{{ wait.trigger.event.data.action == ''later'' }}'
+        sequence:
+        - service: logbook.log
+          data:
+            name: !input 'notification_title'
+            message: !input 'logbook_message_later'
+            entity_id: !input 'input_boolean_4'
+        - delay:
+            minutes: !input 'ask_later_wait_time'
+      - conditions: '{{ wait.trigger.event.data.action == ''skip'' }}'
+        sequence:
+        - service: input_boolean.turn_on
+          target:
+            entity_id: !input 'input_boolean_4'
+        - service: logbook.log
+          data:
+            name: !input 'notification_title'
+            message: !input 'logbook_message_skip'
+            entity_id: !input 'input_boolean_4'
+      default:
+      - device_id: !input 'notify_device'
+        domain: mobile_app
+        type: notify
+        message: clear_notification
+        data:
+          tag: medication-reminder
+      - service: logbook.log
+        data:
+          name: !input 'notification_title'
+          message: !input 'logbook_message_no_answer'
+          entity_id: !input 'input_boolean_4'
+    - condition: state
+      entity_id: !input 'input_boolean_5'
+      state: 'off'
+    sequence:
+    - service: logbook.log
+      data:
+        name: !input 'notification_title'
+        message: !input 'logbook_message_remind'
+        entity_id: !input 'input_boolean_5'
+    - choose:
+      - conditions: '{{ true }}'
+        sequence: !input 'optional_action'
+    - device_id: !input 'notify_device'
+      domain: mobile_app
+      type: notify
+      title: !input 'notification_title'
+      message: !input 'notification_message'
+      data:
+        actions:
+        - title: !input 'notification_action_taken'
+          action: taken
+        - title: !input 'notification_action_later'
+          action: later
+        - title: !input 'notification_action_skip'
+          action: skip
+        tag: medication-reminder
+    - wait_for_trigger:
+        platform: event
+        event_type: mobile_app_notification_action
+      timeout:
+        minutes: !input 'ask_later_wait_time'
+    - choose:
+      - conditions: '{{ wait.trigger.event.data.action == ''taken'' }}'
+        sequence:
+        - service: input_boolean.turn_on
+          target:
+            entity_id: !input 'input_boolean_5'
+        - service: logbook.log
+          data:
+            name: !input 'notification_title'
+            message: !input 'logbook_message_taken'
+            entity_id: !input 'input_boolean_5'
+      - conditions: '{{ wait.trigger.event.data.action == ''later'' }}'
+        sequence:
+        - service: logbook.log
+          data:
+            name: !input 'notification_title'
+            message: !input 'logbook_message_later'
+            entity_id: !input 'input_boolean_5'
+        - delay:
+            minutes: !input 'ask_later_wait_time'
+      - conditions: '{{ wait.trigger.event.data.action == ''skip'' }}'
+        sequence:
+        - service: input_boolean.turn_on
+          target:
+            entity_id: !input 'input_boolean_5'
+        - service: logbook.log
+          data:
+            name: !input 'notification_title'
+            message: !input 'logbook_message_skip'
+            entity_id: !input 'input_boolean_5'
+      default:
+      - device_id: !input 'notify_device'
+        domain: mobile_app
+        type: notify
+        message: clear_notification
+        data:
+          tag: medication-reminder
+      - service: logbook.log
+        data:
+          name: !input 'notification_title'
+          message: !input 'logbook_message_no_answer'
+          entity_id: !input 'input_boolean_5'
