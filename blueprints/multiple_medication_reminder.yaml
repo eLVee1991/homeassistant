@@ -39,9 +39,9 @@ blueprint:
       description: Create and set here a input_boolean to handle history and state of the automation
       selector:
         entity:
-          domain: input_boolean 2
+          domain: input_boolean
     input_boolean_2:
-      name: Dedicated input_boolean
+      name: Dedicated input_boolean 2
       description: Create and set here a input_boolean to handle history and state of the automation
       selector:
         entity:
