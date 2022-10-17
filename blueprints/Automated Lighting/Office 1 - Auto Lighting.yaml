@@ -2,6 +2,7 @@ blueprint:
   name: Auto Lighting
   description: Auto lighting for day and evening/night time with a delay for motion sensors after a button on a remote has been pressed.
   domain: automation
+  source: https://raw.githubusercontent.com/eLVee1991/homeassistant/main/blueprints/Automated%20Lighting/Office%201%20-%20Auto%20Lighting.yaml 
   input:
     lights_day:
       description: Select lights to toggle during the day.
