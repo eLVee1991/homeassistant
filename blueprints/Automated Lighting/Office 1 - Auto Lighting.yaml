@@ -36,17 +36,21 @@ blueprint:
       selector:
         entity:
           domain: binary_sensor
+    trigger_occupied_time:
+      description: Select time before the occupancy binary_sensor turns the lights off.
+      selector:
+        duration:
     trigger_remote:
       description: Trigger to start a cooldown of x minutes before motion sensors can't trigger the lights.
       selector:
         entity:
           domain: sensor
     trigger_remote_action_1:
-      description: "The type of action the remote sensor shows. Example: on/off/single_left/double_left/up/down/left/right"
+      description: The type of action the remote sensor shows. For example on/off/single_left/double_left/up/down/left/right
       selector:
         text:
     trigger_remote_action_2:
-      description: "The type of action the remote sensor shows. Example: on/off/single_left/double_left/up/down/left/right"
+      description: The type of action the remote sensor shows. For example on/off/single_left/double_left/up/down/left/right
       selector:
         text:
 
@@ -109,6 +113,7 @@ action:
   - if:
       - condition: trigger
         id: not_occupied
+        for: !input trigger_occupied_time
       - condition: state
         entity_id: !input cooldown
         state: "off"
