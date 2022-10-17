@@ -2,7 +2,7 @@ blueprint:
   name: Automated Lighting
   description: Auto lighting for day and evening/night time with a delay for motion sensors after a button on a remote has been pressed.
   domain: automation
-  source_url: https://raw.githubusercontent.com/eLVee1991/homeassistant/main/blueprints/Automated%20Lighting/automated_lighting.yaml 
+  source_url: https://raw.githubusercontent.com/eLVee1991/homeassistant/main/blueprints/Automated%20Lighting/automated_lighting.yaml
   input:
     lights_day:
       description: Select lights to toggle during the day.
@@ -64,6 +64,7 @@ trigger:
   - platform: state
     entity_id: !input trigger_occupied
     to: "off"
+    for: !input trigger_occupied_time
     id: not_occupied
   - platform: state
     entity_id: !input trigger_remote
@@ -113,7 +114,6 @@ action:
   - if:
       - condition: trigger
         id: not_occupied
-        for: !input trigger_occupied_time
       - condition: state
         entity_id: !input cooldown
         state: "off"
