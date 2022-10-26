@@ -36,8 +36,8 @@ blueprint:
       selector:
         entity:
           domain: binary_sensor
-    trigger_occupied_time:
-      description: Select time before the occupancy binary_sensor turns the lights off.
+    occupied_time:
+      description: Select time to wait before turning off the lights.
       selector:
         duration:
     trigger_remote:
@@ -45,12 +45,17 @@ blueprint:
       selector:
         entity:
           domain: sensor
-    trigger_remote_action_1:
-      description: The type of action the remote sensor shows. For example on/off/single_left/double_left/up/down/left/right
+    auto_lighting:
+      description: Check if the auto_lighting input_boolean is enabled.
+      selector:
+        entity:
+          domain: input_boolean
+    trigger_remote_action_on:
+      description: "The type of action the remote sensor shows. Example: on/off/single_left/double_left/up/down/left/right"
       selector:
         text:
-    trigger_remote_action_2:
-      description: The type of action the remote sensor shows. For example on/off/single_left/double_left/up/down/left/right
+    trigger_remote_action_off:
+      description: "The type of action the remote sensor shows. Example: on/off/single_left/double_left/up/down/left/right"
       selector:
         text:
 
@@ -64,15 +69,15 @@ trigger:
   - platform: state
     entity_id: !input trigger_occupied
     to: "off"
-    for: !input trigger_occupied_time
+    for: !input occupied_time
     id: not_occupied
   - platform: state
     entity_id: !input trigger_remote
-    to: !input trigger_remote_action_1
+    to: !input trigger_remote_action_on
     id: remote_1
   - platform: state
     entity_id: !input trigger_remote
-    to: !input trigger_remote_action_2
+    to: !input trigger_remote_action_off
     id: remote_2
   - platform: state
     entity_id: !input cooldown
@@ -90,6 +95,9 @@ action:
       - condition: state
         entity_id: !input cooldown
         state: "off"
+      - condition: state
+        entity_id: !input auto_lighting
+        state: "on"
     then:
       - service: light.turn_on
         data: {}
@@ -105,6 +113,9 @@ action:
       - condition: state
         entity_id: !input cooldown
         state: "off"
+      - condition: state
+        entity_id: !input auto_lighting
+        state: "on"
     then:
       - service: light.turn_on
         data: {}
@@ -114,15 +125,39 @@ action:
   - if:
       - condition: trigger
         id: not_occupied
+      - condition: time
+        before: !input "end_time"
+        after: !input "start_time"
       - condition: state
         entity_id: !input cooldown
         state: "off"
+      - condition: state
+        entity_id: !input auto_lighting
+        state: "on"
     then:
       - service: light.turn_off
         data: {}
         target:
           entity_id: !input lights_day
-    alias: If room - Not occupied - Turn off the lights
+    alias: If room - Not occupied - And time between x and x - Turn off the lights_day
+  - if:
+      - condition: trigger
+        id: not_occupied
+      - condition: time
+        before: !input "start_time"
+        after: !input "end_time"
+      - condition: state
+        entity_id: !input cooldown
+        state: "off"
+      - condition: state
+        entity_id: !input auto_lighting
+        state: "on"
+    then:
+      - service: light.turn_off
+        data: {}
+        target:
+          entity_id: !input lights_night
+    alias: If room - Not occupied - And time between x and x - Turn off the lights_night
   - if:
       - condition: or
         conditions:
