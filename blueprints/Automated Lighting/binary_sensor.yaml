@@ -1,3 +1,8 @@
+# add a file named binary_sensor.yaml to your home assistant config folder.
+# add the following line to configuration.yaml
+# 
+# binary_sensor: !include binary_sensor.yaml
+
 - platform: template
   sensors:
     office_1_occupied:
