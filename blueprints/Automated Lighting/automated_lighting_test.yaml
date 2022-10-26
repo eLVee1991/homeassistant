@@ -1,0 +1,232 @@
+blueprint:
+  name: Automated Lighting
+  description: Auto lighting for day and evening/night time with a delay for motion sensors after a button on a remote has been pressed.
+  domain: automation
+  source_url: https://raw.githubusercontent.com/eLVee1991/homeassistant/main/blueprints/Automated%20Lighting/automated_lighting_test.yaml
+  input:
+    lights_day:
+      description: Select lights to toggle during the day.
+      selector:
+        entity:
+          domain: light
+    lights_night:
+      description: Select lights to toggle during the evening/night.
+      selector:
+        entity:
+          domain: light
+    cooldown:
+      description: Select cooldown input boolean to toggle.
+      selector:
+        entity:
+          domain: input_boolean
+    cooldown_time:
+      description: Select cooldown time for light automation after a button/button action.
+      selector:
+        duration:
+    start_time:
+      description: Select starting time for light automation.
+      selector:
+        time:
+    end_time:
+      description: Select end time for light automation.
+      selector:
+        time:
+    trigger_occupied:
+      description: Trigger for checking if room is occupied
+      selector:
+        entity:
+          domain: binary_sensor
+    occupied_time:
+      description: Select time to wait before turning off the lights.
+      selector:
+        duration:
+    trigger_remote:
+      description: Trigger to start a cooldown of x minutes before motion sensors can't trigger the lights.
+      selector:
+        entity:
+          domain: sensor
+    auto_lighting:
+      description: Check if the auto_lighting input_boolean is enabled.
+      selector:
+        entity:
+          domain: input_boolean
+    trigger_remote_action_on:
+      description: "The type of action the remote sensor shows. Example: on/off/single_left/double_left/up/down/left/right"
+      selector:
+        text:
+    trigger_remote_action_off:
+      description: "The type of action the remote sensor shows. Example: on/off/single_left/double_left/up/down/left/right"
+      selector:
+        text:
+
+mode: restart
+#max_exceeded: silent
+trigger:
+  - platform: state
+    entity_id: !input trigger_occupied
+    to: "on"
+    id: occupied
+  - platform: state
+    entity_id: !input trigger_occupied
+    to: "off"
+    for: !input occupied_time
+    id: not_occupied
+  - platform: state
+    entity_id: !input trigger_remote
+    to: !input trigger_remote_action_on
+    id: remote_1
+  - platform: state
+    entity_id: !input trigger_remote
+    to: !input trigger_remote_action_off
+    id: remote_2
+  - platform: state
+    entity_id: !input cooldown
+    to: "on"
+    for: !input cooldown_time
+    id: cooldown_time
+
+action:
+  - if:
+      - condition: trigger
+        id: occupied
+      - condition: time
+        before: !input "end_time"
+        after: !input "start_time"
+      - condition: state
+        entity_id: !input cooldown
+        state: "off"
+      - condition: state
+        entity_id: !input auto_lighting
+        state: "on"
+    then:
+      - service: light.turn_on
+        data: {}
+        target:
+          entity_id: !input lights_day
+    alias: If room - Occupied and time between x and x - Turn on the lights
+  - if:
+      - condition: trigger
+        id: occupied
+      - condition: time
+        before: !input "start_time"
+        after: !input "end_time"
+      - condition: state
+        entity_id: !input cooldown
+        state: "off"
+      - condition: state
+        entity_id: !input auto_lighting
+        state: "on"
+    then:
+      - service: light.turn_on
+        data: {}
+        target:
+          entity_id: !input lights_night
+    alias: If room - Occupied and time between x and x - Turn on the lights
+  - if:
+      - condition: trigger
+        id: not_occupied
+      - condition: time
+        before: !input "end_time"
+        after: !input "start_time"
+      - condition: state
+        entity_id: !input cooldown
+        state: "off"
+      - condition: state
+        entity_id: !input auto_lighting
+        state: "on"
+    then:
+      - service: light.turn_off
+        data: {}
+        target:
+          entity_id: !input lights_day
+    alias: If room - Not occupied - And time between x and x - Turn off the lights_day
+  - if:
+      - condition: trigger
+        id: not_occupied
+      - condition: time
+        before: !input "start_time"
+        after: !input "end_time"
+      - condition: state
+        entity_id: !input cooldown
+        state: "off"
+      - condition: state
+        entity_id: !input auto_lighting
+        state: "on"
+    then:
+      - service: light.turn_off
+        data: {}
+        target:
+          entity_id: !input lights_night
+    alias: If room - Not occupied - And time between x and x - Turn off the lights_night
+  - if:
+      - condition: or
+        conditions:
+          - condition: trigger
+            id: remote_1
+          - condition: trigger
+            id: remote_2
+    then:
+      - service: input_boolean.turn_on
+        data: {}
+        target:
+          entity_id: !input cooldown
+    alias: If room - Remote action - Turn on - Cooldown
+  - if:
+      - condition: trigger
+        id: cooldown_time
+    then:
+      - service: input_boolean.turn_off
+        data: {}
+        target:
+          entity_id: !input cooldown
+    alias: If cooldown on for x min - Turn off - Cooldown
+
+  # Remote Control part disabled by default.
+  # - if:
+  #     - condition: trigger
+  #       id: remote_on
+  #     - condition: time
+  #       before: !input "end_time"
+  #       after: !input "start_time"
+  #   then:
+  #     - service: light.turn_on
+  #       data: {}
+  #       target:
+  #         entity_id: !input lights_day
+  #   alias: If Remote action on - And time between x and x - Turn on lights_day
+  # - if:
+  #     - condition: trigger
+  #       id: remote_on
+  #     - condition: time
+  #       before: !input "start_time"
+  #       after: !input "end_time"
+  #   then:
+  #     - service: light.turn_on
+  #       data: {}
+  #       target:
+  #         entity_id: !input lights_night
+  #   alias: If Remote action on - And time between x and x - Turn on lights_night
+  # - if:
+  #     - condition: trigger
+  #       id: remote_off
+  #     - condition: time
+  #       before: !input "end_time"
+  #       after: !input "start_time"
+  #   then:
+  #     - service: light.turn_off
+  #       data: {}
+  #       target:
+  #         entity_id: !input lights_day
+  #   alias: If Remote action on - And time between x and x - Turn off lights_day
+  # - if:
+  #     - condition: trigger
+  #       id: remote_off
+  #     - condition: time
+  #       before: !input "start_time"
+  #       after: !input "end_time"
+  #   then:
+  #     - service: light.turn_off
+  #       data: {}
+  #       target:
+  #         entity_id: !input lights_night
+  #   alias: If Remote action on - And time between x and x - Turn off lights_night
