@@ -1,5 +1,7 @@
 # Automated Lighting
 This blueprint can help you automate your lights.
+Add this line to your blueprint page on the UI to import the blueprint: \
+`https://raw.githubusercontent.com/eLVee1991/homeassistant/main/blueprints/Automated%20Lighting/automated_lighting.yaml`
 
 ## It can do the following:
 - Turn on/off lights.
