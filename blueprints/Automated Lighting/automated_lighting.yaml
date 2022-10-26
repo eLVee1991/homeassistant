@@ -45,11 +45,6 @@ blueprint:
       selector:
         entity:
           domain: sensor
-    auto_lighting:
-      description: Check if the auto_lighting input_boolean is enabled.
-      selector:
-        entity:
-          domain: input_boolean
     trigger_remote_action_on:
       description: "The type of action the remote sensor shows. Example: on/off/single_left/double_left/up/down/left/right"
       selector:
@@ -95,9 +90,6 @@ action:
       - condition: state
         entity_id: !input cooldown
         state: "off"
-      - condition: state
-        entity_id: !input auto_lighting
-        state: "on"
     then:
       - service: light.turn_on
         data: {}
@@ -113,9 +105,6 @@ action:
       - condition: state
         entity_id: !input cooldown
         state: "off"
-      - condition: state
-        entity_id: !input auto_lighting
-        state: "on"
     then:
       - service: light.turn_on
         data: {}
@@ -131,9 +120,6 @@ action:
       - condition: state
         entity_id: !input cooldown
         state: "off"
-      - condition: state
-        entity_id: !input auto_lighting
-        state: "on"
     then:
       - service: light.turn_off
         data: {}
@@ -149,9 +135,6 @@ action:
       - condition: state
         entity_id: !input cooldown
         state: "off"
-      - condition: state
-        entity_id: !input auto_lighting
-        state: "on"
     then:
       - service: light.turn_off
         data: {}
